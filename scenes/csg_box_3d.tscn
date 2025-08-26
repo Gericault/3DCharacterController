@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://cfr7tq4kh7jw5"]
+
+[ext_resource type="PackedScene" uid="uid://cyfigy20mqd3a" path="res://scenes/player/player.tscn" id="1_erlsj"]
+[ext_resource type="PackedScene" uid="uid://2yw7gtpgesfa" path="res://assets/test_level/test_level.glb" id="2_807mt"]
+
+[sub_resource type="Environment" id="Environment_4ch4r"]
+ambient_light_source = 3
+ambient_light_color = Color(0.686275, 0.764706, 0.94902, 1)
+ambient_light_energy = 0.84
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_4ch4r")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.89118, 0)
+
+[node name="player" parent="." instance=ExtResource("1_erlsj")]
+
+[node name="test_level" parent="." instance=ExtResource("2_807mt")]
