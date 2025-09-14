@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://cyfigy20mqd3a"]
+[gd_scene load_steps=28 format=3 uid="uid://cyfigy20mqd3a"]
 
 [ext_resource type="Script" uid="uid://d1ioyxnlkf086" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="Resource" uid="uid://c3re6caobitch" path="res://data/player/player_stats.tres" id="2_0owmy"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://b4j0257jelj6g" path="res://components/state_machine/states/jump.gd" id="7_qek5x"]
 [ext_resource type="Script" uid="uid://k1bs1dg0127g" path="res://components/state_machine/states/falling.gd" id="8_5gtgg"]
 [ext_resource type="Script" uid="uid://bpqcl5ahvy1w2" path="res://components/state_machine/states/idle.gd" id="9_5gtgg"]
+[ext_resource type="Script" uid="uid://05tyx5885fl6" path="res://components/input_handling/input_handler.gd" id="10_h17s1"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4ch4r"]
 
@@ -72,12 +73,13 @@ states/jump_start/position = Vector2(354, 4)
 states/landing_soft/node = SubResource("AnimationNodeAnimation_ugbui")
 states/landing_soft/position = Vector2(348, 207)
 transitions = ["freehand_idle", "freehand_walk", SubResource("AnimationNodeStateMachineTransition_fcs02"), "freehand_walk", "freehand_idle", SubResource("AnimationNodeStateMachineTransition_myrg7"), "freehand_run", "freehand_idle", SubResource("AnimationNodeStateMachineTransition_kvlxm"), "freehand_idle", "freehand_run", SubResource("AnimationNodeStateMachineTransition_uf5tr"), "Start", "freehand_idle", SubResource("AnimationNodeStateMachineTransition_lgqa7"), "freehand_idle", "jump_start", SubResource("AnimationNodeStateMachineTransition_8ydkj"), "landing_soft", "freehand_idle", SubResource("AnimationNodeStateMachineTransition_3j4b4"), "jump_start", "freehand_fall", SubResource("AnimationNodeStateMachineTransition_yj68g"), "freehand_fall", "landing_soft", SubResource("AnimationNodeStateMachineTransition_ioxgp")]
-graph_offset = Vector2(-196, -67)
+graph_offset = Vector2(-96, -84)
 
-[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("state_machine", "camera")]
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("state_machine", "input_handler", "camera")]
 script = ExtResource("1_8afob")
 player_stats = ExtResource("2_0owmy")
 state_machine = NodePath("state_machine")
+input_handler = NodePath("input_handler")
 camera = NodePath("camera_rig")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -87,39 +89,6 @@ shape = SubResource("CapsuleShape3D_4ch4r")
 [node name="hero_male" parent="." instance=ExtResource("2_dovo2")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="Skeleton3D" parent="hero_male/HeroRig_export" index="0"]
-bones/0/position = Vector3(-0.0274516, 1.09604, -0.00684659)
-bones/0/rotation = Quaternion(1, 5.05692e-15, 1.06581e-14, 6.16095e-08)
-bones/1/rotation = Quaternion(0.728345, 0.00664848, 0.00909108, 0.685118)
-bones/2/rotation = Quaternion(-0.797608, -0.117253, -0.0892889, 0.584894)
-bones/3/rotation = Quaternion(0.303006, -0.00399921, 0.0253788, 0.952642)
-bones/4/rotation = Quaternion(-0.174866, -0.0130585, 0.111172, 0.978209)
-bones/5/rotation = Quaternion(-0.806998, 0.0911236, 0.0372996, 0.582288)
-bones/6/rotation = Quaternion(0.323664, 0.00397039, -0.0271091, 0.945775)
-bones/7/rotation = Quaternion(-0.190385, 0.00913162, -0.0744518, 0.97884)
-bones/8/rotation = Quaternion(0.997018, 0.00505426, 0.000158277, -0.0770059)
-bones/9/rotation = Quaternion(-0.0644628, 2.81656e-07, -6.43096e-09, 0.99792)
-bones/10/rotation = Quaternion(-0.705126, 0.114789, 0.0924075, 0.6936)
-bones/11/rotation = Quaternion(0.979623, 0.184477, 0.0473953, -0.0637224)
-bones/12/rotation = Quaternion(-0.367125, 0.00660879, -0.0293866, 0.929684)
-bones/13/rotation = Quaternion(-0.0465048, -0.134419, 0.214803, 0.966245)
-bones/14/rotation = Quaternion(-0.434575, 0.895009, -0.0717361, 0.070404)
-bones/15/rotation = Quaternion(-0.172143, 0.721074, 0.191825, 0.643135)
-bones/16/rotation = Quaternion(-0.21767, -0.000106927, 0.000375333, 0.976022)
-bones/17/rotation = Quaternion(-0.180791, -1.16457e-06, -3.12885e-07, 0.983522)
-bones/18/rotation = Quaternion(-1.48241e-07, -0.0487465, -2.08516e-06, 0.998811)
-bones/19/rotation = Quaternion(0.720689, -0.692637, -0.0135034, -0.0260835)
-bones/20/rotation = Quaternion(0.97496, -0.203167, -0.0321305, -0.0845221)
-bones/21/rotation = Quaternion(-0.377898, -0.0065785, 0.0302491, 0.92533)
-bones/22/rotation = Quaternion(0.00213284, 0.0424197, -0.0857243, 0.995413)
-bones/24/rotation = Quaternion(0.434575, 0.895009, -0.071736, -0.0704039)
-bones/25/rotation = Quaternion(-0.172143, -0.721073, -0.191825, 0.643136)
-bones/26/rotation = Quaternion(-0.21767, 0.000106792, -0.000375329, 0.976022)
-bones/27/rotation = Quaternion(-0.18079, 1.14043e-06, 2.90087e-07, 0.983522)
-bones/28/rotation = Quaternion(-2.88794e-08, -0.0277177, 2.15704e-06, 0.999616)
-bones/29/rotation = Quaternion(0.999716, 1.25214e-08, -8.31938e-08, 0.0238422)
-bones/29/scale = Vector3(1, 1, 1)
-
 [node name="AnimationPlayer" parent="hero_male" index="1"]
 autoplay = "freehand_idle"
 
@@ -127,35 +96,32 @@ autoplay = "freehand_idle"
 transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 2, 0)
 target = NodePath("..")
 
+[node name="input_handler" type="Node" parent="."]
+script = ExtResource("10_h17s1")
+
 [node name="state_machine" type="Node" parent="." node_paths=PackedStringArray("starting_state")]
 script = ExtResource("4_lvxji")
-starting_state = NodePath("walk_state")
+starting_state = NodePath("idling")
 metadata/_custom_type_script = "uid://coq170nufyhlh"
 
-[node name="walk_state" type="Node" parent="state_machine" node_paths=PackedStringArray("jump_state", "falling", "idle")]
+[node name="walking" type="Node" parent="state_machine" node_paths=PackedStringArray("state_machine")]
 script = ExtResource("5_p47bc")
-jump_state = NodePath("../jump")
-falling = NodePath("../falling")
-idle = NodePath("../idle")
+state_machine = NodePath("..")
 metadata/_custom_type_script = "uid://bou7pv3a211jl"
 
-[node name="jump" type="Node" parent="state_machine" node_paths=PackedStringArray("falling", "idle")]
+[node name="jumping" type="Node" parent="state_machine" node_paths=PackedStringArray("state_machine")]
 script = ExtResource("7_qek5x")
-falling = NodePath("../falling")
-idle = NodePath("../idle")
+state_machine = NodePath("..")
 metadata/_custom_type_script = "uid://bou7pv3a211jl"
 
-[node name="falling" type="Node" parent="state_machine" node_paths=PackedStringArray("idle", "walk_state")]
+[node name="falling" type="Node" parent="state_machine" node_paths=PackedStringArray("state_machine")]
 script = ExtResource("8_5gtgg")
-idle = NodePath("../idle")
-walk_state = NodePath("../walk_state")
+state_machine = NodePath("..")
 metadata/_custom_type_script = "uid://bou7pv3a211jl"
 
-[node name="idle" type="Node" parent="state_machine" node_paths=PackedStringArray("jump_state", "walk_state", "falling")]
+[node name="idling" type="Node" parent="state_machine" node_paths=PackedStringArray("state_machine")]
 script = ExtResource("9_5gtgg")
-jump_state = NodePath("../jump")
-walk_state = NodePath("../walk_state")
-falling = NodePath("../falling")
+state_machine = NodePath("..")
 metadata/_custom_type_script = "uid://bou7pv3a211jl"
 
 [node name="AnimationTree" type="AnimationTree" parent="."]

@@ -10,11 +10,8 @@ func enter() -> void:
 func exit() -> void:
 	pass
 
-func input(event: InputEvent) -> State:
-	return null
+func process(delta: float, input: InputPackage) -> String:
+	return ""
 
-func process(delta: float) -> State:
-	return null
-
-func physics_process(delta: float) -> State:
-	return null
+func physics_process(delta: float, input: InputPackage) -> String:
+	return ""

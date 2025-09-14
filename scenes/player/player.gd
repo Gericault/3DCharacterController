@@ -5,6 +5,7 @@ const ANIM_BLEND_SPEED: float = 0.2
 
 @export var player_stats: PlayerStats
 @export var state_machine: StateMachine
+@export var input_handler: InputHandler
 
 @export var camera: Node3D
 @onready var animation_tree = $AnimationTree["parameters/playback"]
@@ -13,11 +14,13 @@ var current_speed : float
 ## use to snapshot movement direction
 var momentum: Vector3
 
-#TODO move current_speed and movement into a movement_controller node within statemachine
- 
+#TODO gather input and sort; pass to correct state machine (account for validility - can't jump if in midair + no stamina)
+#input_handler collects all inputs into a nice package of arrays, each move needs to have its own priority 
+#moves/move_sets should be a resource - so can edit as CSV
+
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	state_machine.init(self)
+	state_machine.init(self, input_handler)
 
 func _input(event):
 	if event.is_action_pressed("tab"):
@@ -26,11 +29,7 @@ func _input(event):
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
-func _unhandled_input(event: InputEvent) -> void:
-	state_machine.input(event)
-
 func _physics_process(delta: float) -> void:
-	print(state_machine.current_state)
 	state_machine.physics_process(delta)
 	velocity += get_gravity() * delta
 	
@@ -70,7 +69,7 @@ func move_character(direction, turn_speed: float = -1.0) -> void:
 
 ## returns desired direction relative to camera
 func get_direction_from_input() -> Vector3:
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	var input_dir : Vector2 = input_handler.collect_inputs().movement_vector
 	# make movement relative to camera and account for joystick sens
 	var direction = (camera.global_basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	# normalise camera pitch so looking into ground/up doesn't adjust speed

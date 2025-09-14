@@ -14,7 +14,8 @@ ambient_light_energy = 0.84
 environment = SubResource("Environment_4ch4r")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.89118, 0)
+transform = Transform3D(1, 0, 0, 0, 0.744626, 0.667482, 0, -0.667482, 0.744626, 0, 5.89118, 0)
+light_energy = 0.652
 
 [node name="player" parent="." instance=ExtResource("1_erlsj")]
 

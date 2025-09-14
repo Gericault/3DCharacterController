@@ -1,31 +1,22 @@
 extends State
 
-#TOOD reference player stats and pass to states
-
 @onready var stats: PlayerStats
 
-@export var jump_state: State
-@export var falling: State
-@export var idle: State
-
+@export var state_machine: StateMachine
 
 var current_speed: float
 
 func enter():
 	stats = parent.player_stats
 
-func input(event: InputEvent) -> State:
-	#move to jump state
-	if event.is_action_pressed("jump") and parent.is_on_floor() and not parent.is_falling():
-		return jump_state
-
-	return null
-
-func physics_process(_delta: float) -> State:
+func physics_process(_delta: float, input: InputPackage) -> String:
 	#check if falling
 	if not parent.is_on_floor():
-		return falling
-			
+		return "falling"
+	
+	if input.jump and not parent.is_falling():
+		return "jumping"
+
 	var direction = parent.get_direction_from_input()
 	# if we are falling or landing wait for animations to finish before moving (but still deccelerate)
 	if parent.is_falling():
@@ -36,9 +27,9 @@ func physics_process(_delta: float) -> State:
 	#check if we are not decelerating and not moving; set to idle or play appropiate animationw
 	current_speed = parent.velocity.length()
 	if current_speed == 0.0:
-		return idle
+		return "idling"
 	play_movement_animations(current_speed)
-	return null
+	return ""
 
 
 
