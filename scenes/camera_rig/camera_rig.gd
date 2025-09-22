@@ -34,4 +34,7 @@ func _physics_process(delta: float) -> void:
 	if target:
 		#here you can physics lerp to remove jitter
 		position = target.position + INITIAL_POSITION_OFFSET
-		
+
+func landing_kickback() -> void:
+	#consider fall time in delta as a arg
+	pass

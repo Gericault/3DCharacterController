@@ -20,11 +20,11 @@ func physics_process(_delta: float, input: InputPackage) -> String:
 	var direction = parent.get_direction_from_input()
 	# if we are falling or landing wait for animations to finish before moving (but still deccelerate)
 	if parent.is_falling():
-		direction = Vector3.ZERO
-	
+		#direction = Vector3.ZERO
+		pass
 	parent.move_character(direction)
 	
-	#check if we are not decelerating and not moving; set to idle or play appropiate animationw
+	#check if we are not decelerating and not moving; set to idle or play appropiate animation
 	current_speed = parent.velocity.length()
 	if current_speed == 0.0:
 		return "idling"

@@ -10,18 +10,20 @@ const ANIM_BLEND_SPEED: float = 0.2
 @export var camera: Node3D
 @onready var animation_tree = $AnimationTree["parameters/playback"]
 
-var current_speed : float
+#used to calculate jumps within given paramters in stats - see projectile motion - f(x) = (ax*2) + bc + c
+@onready var jump_velocity: float = ((2.0 * player_stats.jump_height) / player_stats.jump_time_to_peak)
+@onready var jump_gravity: float = (-2.0 * player_stats.jump_height) / (player_stats.jump_time_to_peak * player_stats.jump_time_to_peak)
+@onready var fall_gravity: float = (-2.0 * player_stats.jump_height) / (player_stats.jump_time_to_descent * player_stats.jump_time_to_descent)
+
 ## use to snapshot movement direction
 var momentum: Vector3
-
-#TODO gather input and sort; pass to correct state machine (account for validility - can't jump if in midair + no stamina)
-#input_handler collects all inputs into a nice package of arrays, each move needs to have its own priority 
-#moves/move_sets should be a resource - so can edit as CSV
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	state_machine.init(self, input_handler)
+	#connect landed signal from fall state to camera kickback function
 
+# mouse is hidden during gameplay, toggled with tab key
 func _input(event):
 	if event.is_action_pressed("tab"):
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
@@ -29,10 +31,17 @@ func _input(event):
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
+
 func _physics_process(delta: float) -> void:
 	state_machine.physics_process(delta)
-	velocity += get_gravity() * delta
 	
+	#apply gravity - consider moving to jumping/falling only
+	velocity.y += get_jump_gravity() * delta
+	
+func get_jump_gravity() -> float:
+	if not is_on_floor():
+		return jump_gravity if velocity.y < 0.0 else fall_gravity
+	return 0.0
 	
 func _process(delta: float) -> void:
 	state_machine.process(delta)
