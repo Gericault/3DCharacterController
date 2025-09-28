@@ -12,8 +12,8 @@ const ANIM_BLEND_SPEED: float = 0.2
 
 #used to calculate jumps within given paramters in stats - see projectile motion - f(x) = (ax*2) + bc + c
 @onready var jump_velocity: float = ((2.0 * player_stats.jump_height) / player_stats.jump_time_to_peak)
-@onready var jump_gravity: float = (-2.0 * player_stats.jump_height) / (player_stats.jump_time_to_peak * player_stats.jump_time_to_peak)
-@onready var fall_gravity: float = (-2.0 * player_stats.jump_height) / (player_stats.jump_time_to_descent * player_stats.jump_time_to_descent)
+@onready var jump_gravity: float = ((-2.0 * player_stats.jump_height) / (player_stats.jump_time_to_peak * player_stats.jump_time_to_peak))
+@onready var fall_gravity: float = ((-2.0 * player_stats.jump_height) / (player_stats.jump_time_to_descent * player_stats.jump_time_to_descent))
 
 ## use to snapshot movement direction
 var momentum: Vector3
@@ -34,8 +34,6 @@ func _input(event):
 
 func _physics_process(delta: float) -> void:
 	state_machine.physics_process(delta)
-	
-	#apply gravity - consider moving to jumping/falling only
 	velocity.y += get_jump_gravity() * delta
 	
 func get_jump_gravity() -> float:
@@ -72,7 +70,6 @@ func move_character(direction, turn_speed: float = -1.0) -> void:
 		velocity.x = move_toward(velocity.x, 0, player_stats.deceleration_rate)
 		velocity.z = move_toward(velocity.z, 0, player_stats.deceleration_rate)
 
-	#parent.move_and_slide()
 	turn_to(direction, turn_speed)
 	move_and_slide()
 

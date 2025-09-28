@@ -3,17 +3,21 @@ extends State
 @onready var stats: PlayerStats
 
 @export var state_machine: StateMachine
+var falling_timer : float = 0.0
+var _falling_kickback_duration : float = 0.1
 
 func enter() -> void:
 	parent.animation_tree.travel("freehand_fall", parent.ANIM_BLEND_SPEED * 2)
 	stats = parent.player_stats
-	
+	falling_timer = 0.0
 
 func exit() -> void:
 	parent.momentum = Vector3.ZERO
+	parent.camera.trigger_landing_kickback((falling_timer * falling_timer), _falling_kickback_duration)
 
 func physics_process(_delta: float, input: InputPackage) -> String:
 	#keeping seperate to below if/else so I don't duplicate this signal
+	falling_timer =+ _delta
 	if parent.is_on_floor():
 		#signal landed
 		pass
