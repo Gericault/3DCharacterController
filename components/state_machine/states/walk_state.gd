@@ -23,15 +23,13 @@ func physics_process(_delta: float, input: InputPackage) -> String:
 		#direction = Vector3.ZERO
 		pass
 	parent.move_character(direction)
-	
+
 	#check if we are not decelerating and not moving; set to idle or play appropiate animation
 	current_speed = parent.velocity.length()
 	if current_speed == 0.0:
 		return "idling"
 	play_movement_animations(current_speed)
 	return ""
-
-
 
 func play_movement_animations(speed):
 	#play walking animations based on speed

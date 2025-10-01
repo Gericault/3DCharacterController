@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_o1dyv")
-jump_height = 12.0
-jump_time_to_peak = 1.1
-jump_time_to_descent = 0.6
+jump_height = 4.5
+jump_time_to_peak = 0.5
+jump_time_to_descent = 0.4
 air_control = 0.3
 metadata/_custom_type_script = "uid://bvrnca78i3ai4"

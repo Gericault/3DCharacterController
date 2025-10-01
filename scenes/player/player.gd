@@ -38,7 +38,7 @@ func _physics_process(delta: float) -> void:
 	
 func get_jump_gravity() -> float:
 	if not is_on_floor():
-		return jump_gravity if velocity.y < 0.0 else fall_gravity
+		return jump_gravity if velocity.y > 0.0 else fall_gravity
 	return 0.0
 	
 func _process(delta: float) -> void:

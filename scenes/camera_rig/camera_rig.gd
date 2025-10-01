@@ -11,18 +11,30 @@ extends SpringArm3D
 
 @export_group("kickback")
 @export var enable_kickback : bool = true
-var _screen_shake_tween : Tween
-const MAX_SCREEN_SHAKE : float = 0.5
-const MIN_SCREEN_SHAKE : float = 0.05
+@export var decay: float = 3.0
+@export var max_offset: Vector3 = Vector3(0.5, 0.5, 0.5)
+@export var max_rotation: float = deg_to_rad(5.0)
+@export var trauma_power: int = 3
+
+var trauma: float = 0.0
+var noise_time: float = 0.0
+var noise = FastNoiseLite.new()
+var original_camera_position: Vector3
+var original_camera_rotation: Vector3
+
 
 var mouse_input: Vector2 = Vector2()
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	spring_length = camera.position.z
 
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	noise.seed = randi()
+	noise.frequency = 0.2
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+	original_camera_position = camera.position
+	original_camera_rotation = camera.rotation
+
 func _process(delta: float) -> void:
 	var look_input := Input.get_vector("view_left", "view_right", "view_up", "view_down",)
 	look_input *= turn_rate * delta
@@ -38,27 +50,41 @@ func _input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	if target:
-		#here you can physics lerp to remove jitter
 		position = target.position + INITIAL_POSITION_OFFSET
 
-func trigger_landing_kickback(amount: float, time: float) -> void:
-	if _screen_shake_tween:
-		_screen_shake_tween.kill()
-	
-	_screen_shake_tween = create_tween()
 
-	# anon function to reset camera to 0 in 0.1 seconds
-	_screen_shake_tween.finished.connect(func():
-		var reset_tween = create_tween()
-		# Duration: 0.15 seconds (adjust for desired speed)
-		reset_tween.tween_property(camera, "h_offset", 0.0, 0.10).set_ease(Tween.EASE_OUT)
-		reset_tween.tween_property(camera, "rotation:x", 0.0, 0.10).set_ease(Tween.EASE_OUT)
-	)
-	
-	_screen_shake_tween.tween_method(update_screen_shake.bind(amount), 0.0, -0.5, time).set_ease(Tween.EASE_OUT)
+	if trauma > 0 and enable_kickback:
+		trauma = max(trauma - decay * delta, 0.0)
+		var shake_amount = pow(trauma, trauma_power)
+		# Advance the noise time for smooth transition
+		noise_time += delta * 25.0
+		# Calculate the noise-based offset
+		var noise_px = noise.get_noise_2d(1000.0, noise_time)
+		var noise_py = noise.get_noise_2d(2000.0, noise_time)
+		var noise_pz = noise.get_noise_2d(3000.0, noise_time)
+		var noise_rx = noise.get_noise_2d(4000.0, noise_time)
+		var noise_rz = noise.get_noise_2d(5000.0, noise_time)
 
-func update_screen_shake(alpha: float, amount:float) -> void:
-	amount = remap(amount, 0.0, 1.0 , MIN_SCREEN_SHAKE, MAX_SCREEN_SHAKE)
-	var current_shake_amount = amount * (1.0 -alpha)
-	camera.h_offset = randf_range(-current_shake_amount, current_shake_amount)
-	camera.rotation.x = sin(amount * alpha)
+		var offset_vector = Vector3(
+			max_offset.x * noise_px,
+			max_offset.y * noise_py,
+			max_offset.z * noise_pz
+		)
+		camera.position = original_camera_position + offset_vector * shake_amount
+		var shake_rotation = Vector3(
+			max_rotation * shake_amount * noise_rx,
+			0.0,
+			max_rotation * shake_amount * noise_rz
+		)
+		camera.rotation.x = original_camera_position.x + shake_rotation.x
+		camera.rotation.z = original_camera_rotation.z + shake_rotation.z
+
+		if trauma == 0.0:
+			camera.position = original_camera_position
+			camera.rotation = original_camera_rotation
+
+func add_trauma(amount: float, direction: Vector3):
+	if not enable_kickback:
+		return
+	trauma = min(trauma + amount, 1.0)
+	camera.position += direction * amount * 0.5
